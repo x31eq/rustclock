@@ -1,6 +1,3 @@
-extern crate chrono;
-extern crate num_integer;
-
 use chrono::{Datelike, Timelike};
 use num_integer::div_mod_floor;
 
