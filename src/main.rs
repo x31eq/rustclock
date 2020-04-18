@@ -1,13 +1,16 @@
 extern crate chrono;
+extern crate num_integer;
 
 use chrono::{Datelike, Timelike};
+use num_integer::div_mod_floor;
 
 fn main() {
     let local = chrono::Local::now();
     let month = local.month0();
-    let quarter = local.year() as u32 * 4 + month / 3;
+    let (quarter, month3) = div_mod_floor(month, 3);
+    let quarter = local.year() as u32 * 4 + quarter;
     let weekday = local.weekday().num_days_from_sunday();
-    let qday = month % 3 + (if month == 2 || month == 11 { 1 } else { 0 });
+    let qday = month3 + (if month == 2 || month == 11 { 1 } else { 0 });
     let week = (qday + local.day() + 5 - weekday) / 7;
     print!("{:x}{:01x}", quarter % 0x1000, week);
     let (pm, hour) = local.hour12();
