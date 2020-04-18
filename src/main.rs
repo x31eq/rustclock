@@ -1,8 +1,8 @@
-use chrono::{Datelike, Timelike};
+use chrono::{Local, Datelike, Timelike};
 use num_integer::{div_mod_floor, mod_floor};
 
 fn main() {
-    let local = chrono::Local::now();
+    let local = Local::now();
     let month = local.month0();
     let (quarter, month3) = div_mod_floor(month, 3);
     let quarter = mod_floor(local.year(), 1024) as u32 * 4 + quarter;
