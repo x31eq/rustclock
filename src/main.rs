@@ -13,5 +13,5 @@ fn main() {
     let (pm, hour) = local.hour12();
     let halfday = weekday * 2 + pm as u32;
     let ticks = (local.minute() * 4 + local.second() / 15) * 16 / 15;
-    println!(".{:01x}{:01x}{:02x}", halfday, hour, ticks);
+    println!(".{:01x}{:01x}{:02x}", halfday, hour % 12, ticks);
 }
