@@ -9,7 +9,7 @@ fn main() {
     let weekday = local.weekday().num_days_from_sunday();
     let qday = month3 + (if month == 2 || month == 11 { 1 } else { 0 });
     let week = (qday + local.day() + 5 - weekday) / 7;
-    print!("{:x}{:01x}", quarter, week);
+    print!("{:03x}{:01x}", quarter, week);
     let (pm, hour) = local.hour12();
     let halfday = weekday * 2 + (if pm { 1 } else { 0 });
     let ticks = (local.minute() * 4 + local.second() / 15) * 16 / 15;
