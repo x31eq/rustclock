@@ -1,5 +1,4 @@
 use num_integer::{div_floor, div_mod_floor, mod_floor};
-/// Current time in bfee format (no leap seconds)
 use time;
 
 pub struct Time {
