@@ -4,10 +4,11 @@ use rustclock::Time;
 fn main() {
     if let Some(feestamp) = env::args().skip(1).next() {
         let mut parts = feestamp.split(':');
-        let dstamp = parts.next().expect("Timestamp must include a :");
-        let tstamp = parts.next().unwrap_or("0");
-        let dstamp = i32::from_str_radix(dstamp, 16).expect("Bad format");
-        let tstamp = u32::from_str_radix(tstamp, 16).expect("Bad format");
+        let date_part = parts.next().expect("Timestamp must include a :");
+        let time_part = parts.next().unwrap_or("0");
+        let dstamp = i32::from_str_radix(date_part, 16).expect("Bad format");
+        let mut tstamp = u32::from_str_radix(time_part, 16).expect("Bad format");
+        tstamp <<= 4 * (4 - time_part.len());
         let then = Time {
                 quarter: dstamp / 0x100 + 1984 * 4,
                 week: (dstamp / 0x10) as u8 & 0xf,
