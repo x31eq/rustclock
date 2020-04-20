@@ -8,6 +8,4 @@ fn main() {
         "{:x}:{:x}{:02x}{:x}",
         now.halfday, now.hour, now.tick, now.sec
     );
-
-    println!("{}", now.decode().rfc3339());
 }
