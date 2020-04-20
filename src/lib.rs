@@ -18,7 +18,7 @@ impl Time {
         let month = local.month0();
         let (quarter, month3) = div_mod_floor(month, 3);
         let weekday = local.weekday().num_days_from_sunday();
-        let qday = month3 + (month == 2 || month == 11) as u32;
+        let qday = month3 - (month == 2 || month == 11) as u32;
         let (pm, hour) = local.hour12();
         let (tick, sec) = div_mod_floor(local.second(), 15);
         Time {
