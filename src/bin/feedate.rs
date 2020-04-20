@@ -25,7 +25,7 @@ fn main() {
             tick: ((tstamp / 0x10) & 0xff) as u8,
             sec: (tstamp & 0xf) as u8,
         };
-        println!("{}", then.decode().rfc3339());
+        println!("{}", then.decode().strftime("%Y-%m-%d %T").unwrap());
     } else {
         eprintln!("Give the timestamp to decode on the command line");
     }
