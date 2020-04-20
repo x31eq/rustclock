@@ -1,6 +1,6 @@
 /// Current time in bfee format (no leap seconds)
 
-use chrono::{Local, Datelike, Timelike};
+use time;
 use num_integer::div_mod_floor;
 
 pub struct Time {
@@ -14,19 +14,19 @@ pub struct Time {
 
 impl Time {
     pub fn now() -> Self {
-        let local = Local::now();
-        let month = local.month0();
+        let local = time::now();
+        let month = local.tm_mon;
         let (quarter, month3) = div_mod_floor(month, 3);
-        let weekday = local.weekday().num_days_from_sunday();
-        let qday = month3 * 38 - (month == 2 || month == 11) as u32;
-        let (pm, hour) = local.hour12();
-        let (tick, sec) = div_mod_floor(local.second(), 15);
+        let weekday = local.tm_wday;
+        let qday = month3 * 38 - (month == 2 || month == 11) as i32;
+        let (pm, hour) = div_mod_floor(local.tm_hour, 12);
+        let (tick, sec) = div_mod_floor(local.tm_sec, 15);
         Time {
-            quarter: local.year() * 4 + quarter as i32,
-            week: ((qday + local.day() + 5 - weekday) / 7) as u8,
+            quarter: (local.tm_year + 1900) * 4 + quarter as i32,
+            week: ((qday + local.tm_mday + 5 - weekday) / 7) as u8,
             halfday: weekday as u8 * 2 + pm as u8,
-            hour: hour as u8 % 12,
-            tick: ((local.minute() * 4 + tick) * 16 / 15) as u8,
+            hour: hour as u8,
+            tick: ((local.tm_min * 4 + tick) * 16 / 15) as u8,
             sec: sec as u8,
         }
     }
