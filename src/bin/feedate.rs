@@ -7,12 +7,12 @@ fn main() {
         let date_part = parts.next().unwrap();
         let time_part = parts.next().unwrap_or("0");
         let dstamp = if date_part.len() > 0 {
-            i32::from_str_radix(date_part, 16).expect("Bad format")
+            i32::from_str_radix(date_part, 16).expect("Bad date format")
         } else {
             0
         };
         let mut tstamp = if time_part.len() > 0 {
-            u32::from_str_radix(time_part, 16).expect("Bad format")
+            u32::from_str_radix(time_part, 16).expect("Bad time format")
         } else {
             0
         };
