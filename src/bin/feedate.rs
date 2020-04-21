@@ -2,7 +2,7 @@ use rustclock::Time;
 use std::env;
 
 fn main() {
-    if let Some(feestamp) = env::args().skip(1).next() {
+    if let Some(feestamp) = env::args().nth(1) {
         let result = Time::from_feestamp(feestamp).decode();
         println!(
             "{}-{:02}-{:02} {:02}:{:02}:{:02}",

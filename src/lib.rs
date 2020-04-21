@@ -58,15 +58,15 @@ impl Time {
         let mut parts = festamp.split('.');
         let date_part = parts.next().unwrap();
         let time_part = parts.next().unwrap_or("0");
-        let dstamp = if date_part.len() > 0 {
+        let dstamp = if date_part.is_empty() {
+            0
+        } else {
             i32::from_str_radix(date_part, 16).expect("Bad date format")
-        } else {
-            0
         };
-        let mut tstamp = if time_part.len() > 0 {
-            u32::from_str_radix(time_part, 16).expect("Bad time format")
-        } else {
+        let mut tstamp = if time_part.is_empty() {
             0
+        } else {
+            u32::from_str_radix(time_part, 16).expect("Bad time format")
         };
         tstamp <<= 4 * (4 - time_part.len());
         Time {
@@ -83,15 +83,15 @@ impl Time {
         let mut parts = feestamp.split(':');
         let date_part = parts.next().unwrap();
         let time_part = parts.next().unwrap_or("0");
-        let dstamp = if date_part.len() > 0 {
+        let dstamp = if date_part.is_empty() {
+            0
+        } else {
             i32::from_str_radix(date_part, 16).expect("Bad date format")
-        } else {
-            0
         };
-        let mut tstamp = if time_part.len() > 0 {
-            u32::from_str_radix(time_part, 16).expect("Bad time format")
-        } else {
+        let mut tstamp = if time_part.is_empty() {
             0
+        } else {
+            u32::from_str_radix(time_part, 16).expect("Bad time format")
         };
         tstamp <<= 4 * (4 - time_part.len());
         Time {

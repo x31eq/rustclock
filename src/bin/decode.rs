@@ -2,7 +2,7 @@ use rustclock::Time;
 use std::env;
 
 fn main() {
-    if let Some(stamp) = env::args().skip(1).next() {
+    if let Some(stamp) = env::args().nth(1) {
         let constructor = {
             if stamp.find(':') == None {
                 Time::from_festamp
