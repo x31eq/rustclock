@@ -12,6 +12,13 @@ fn main() {
                 "%Y-%m-%d %H:%M:%S",
             )
             .expect("Bad time format")
+        } else if date_part.find('-') == None {
+            // date_part is really a time!
+            time::strptime(
+                &format!("1984-01-01 {}", date_part),
+                "%Y-%m-%d %H:%M:%S",
+            )
+            .expect("Bad time format")
         } else if date_part.find(' ') == None {
             time::strptime(&date_part, "%Y-%m-%d").expect("Bad date format")
         } else {
