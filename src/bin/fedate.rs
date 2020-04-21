@@ -25,7 +25,10 @@ fn main() {
             tick: (tstamp & 0xffff) as u8,
             sec: 0,
         };
-        println!("{}", then.decode().strftime("%Y-%m-%d %T").unwrap());
+        let result = then.decode();
+        println!("{}-{:02}-{:02} {:02}:{:02}:{:02}",
+                 result.tm_year + 1900, result.tm_mon, result.tm_mday,
+                 result.tm_hour, result.tm_min, result.tm_sec)
     } else {
         eprintln!("Give the timestamp to decode on the command line");
     }
