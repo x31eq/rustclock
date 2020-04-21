@@ -1,4 +1,5 @@
 use num_integer::{div_floor, div_mod_floor, mod_floor};
+use std::env;
 use time;
 
 pub struct Time {
@@ -69,8 +70,15 @@ impl Time {
             u32::from_str_radix(time_part, 16).expect("Bad time format")
         };
         if date_part.len() < 4 {
-            // Default epoch is 1984 to 2047
-            dstamp += 1984 * 0x40;
+            let epoch = {
+                if let Ok(epoch_str) = env::var("HEXEPOCH") {
+                    epoch_str.parse::<i32>().expect("Bad HEXEPOCH")
+                }
+                else {
+                    1984
+                }
+            };
+            dstamp += epoch * 0x40;
         }
         tstamp <<= 4 * (5 - time_part.len());
         Time {
@@ -98,8 +106,15 @@ impl Time {
             u32::from_str_radix(time_part, 16).expect("Bad time format")
         };
         if date_part.len() < 5 {
-            // Default epoch is 1984 to 2047
-            dstamp += 1984 * 0x400;
+            let epoch = {
+                if let Ok(epoch_str) = env::var("HEXEPOCH") {
+                    epoch_str.parse::<i32>().expect("Bad HEXEPOCH")
+                }
+                else {
+                    1984
+                }
+            };
+            dstamp += epoch * 0x400;
         }
         tstamp <<= 4 * (4 - time_part.len());
         Time {
