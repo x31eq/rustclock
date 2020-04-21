@@ -12,8 +12,11 @@ fn main() {
                 "%Y-%m-%d %H:%M:%S",
             )
             .expect("Bad time format")
-        } else {
+        } else if date_part.find(' ') == None {
             time::strptime(&date_part, "%Y-%m-%d").expect("Bad date format")
+        } else {
+            time::strptime(&date_part, "%Y-%m-%d %H:%M:%S")
+                .expect("Bad date format")
         })
     } else {
         Time::now()
