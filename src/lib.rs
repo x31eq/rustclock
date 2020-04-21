@@ -130,7 +130,12 @@ impl Time {
             Time::now()
         } else {
             Time::from_tm({
-                if datetime.find('-') == None {
+                if datetime.find('@') == Some(0) {
+                    let mut datetime = datetime;
+                    datetime.remove(0);
+                    let stamp: i64 = datetime.parse().expect("Bad timestamp");
+                    time::at(time::Timespec::new(stamp, 0))
+                } else if datetime.find('-') == None {
                     time::strptime(
                         &format!("1984-01-01 {}", datetime),
                         "%Y-%m-%d %H:%M:%S",
