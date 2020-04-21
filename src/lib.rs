@@ -125,11 +125,10 @@ impl Time {
     ///
     /// This is a bit ad hoc but used by two binaries
     pub fn from_args() -> Self {
-        let args = env::args().skip(1);
-        if args.len() == 0 {
+        let datetime = env::args().skip(1).collect::<Vec<String>>().join(" ");
+        if datetime.is_empty() {
             Time::now()
         } else {
-            let datetime = args.collect::<Vec<String>>().join(" ");
             Time::from_tm({
                 if datetime.find('-') == None {
                     time::strptime(
