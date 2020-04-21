@@ -54,7 +54,7 @@ impl Time {
         }
     }
 
-    pub fn from_festamp(festamp: String) -> Self {
+    pub fn from_festamp(festamp: &str) -> Self {
         let mut parts = festamp.split('.');
         let date_part = parts.next().unwrap();
         let time_part = parts.next().unwrap_or("0");
@@ -83,7 +83,7 @@ impl Time {
         }
     }
 
-    pub fn from_feestamp(feestamp: String) -> Self {
+    pub fn from_feestamp(feestamp: &str) -> Self {
         let mut parts = feestamp.split(':');
         let date_part = parts.next().unwrap();
         let time_part = parts.next().unwrap_or("0");

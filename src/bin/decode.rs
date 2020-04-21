@@ -10,7 +10,7 @@ fn main() {
                 Time::from_feestamp
             }
         };
-        let result = constructor(stamp).decode();
+        let result = constructor(&stamp).decode();
         println!(
             "{}-{:02}-{:02} {:02}:{:02}:{:02}",
             result.tm_year + 1900,

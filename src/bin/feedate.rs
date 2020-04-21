@@ -3,7 +3,7 @@ use std::env;
 
 fn main() {
     if let Some(feestamp) = env::args().nth(1) {
-        let result = Time::from_feestamp(feestamp).decode();
+        let result = Time::from_feestamp(&feestamp).decode();
         println!(
             "{}-{:02}-{:02} {:02}:{:02}:{:02}",
             result.tm_year + 1900,
