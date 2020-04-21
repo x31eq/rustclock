@@ -68,14 +68,14 @@ impl Time {
         } else {
             u32::from_str_radix(time_part, 16).expect("Bad time format")
         };
-        tstamp <<= 4 * (4 - time_part.len());
+        tstamp <<= 4 * (5 - time_part.len());
         Time {
             quarter: dstamp / 0x10,
             week: dstamp as u8 & 0xf,
-            halfday: (tstamp / 0x1000) as u8,
-            hour: (tstamp / 0x100) as u8 & 0xf,
-            tick: (tstamp & 0xffff) as u8,
-            sec: 0,
+            halfday: (tstamp / 0x1_0000) as u8,
+            hour: ((tstamp / 0x1000) & 0xf) as u8,
+            tick: ((tstamp / 0x10) & 0xffff) as u8,
+            sec: (tstamp & 0xf) as u8,
         }
     }
 
