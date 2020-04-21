@@ -70,15 +70,7 @@ impl Time {
             u32::from_str_radix(time_part, 16).expect("Bad time format")
         };
         if date_part.len() < 4 {
-            let epoch = {
-                if let Ok(epoch_str) = env::var("HEXEPOCH") {
-                    epoch_str.parse::<i32>().expect("Bad HEXEPOCH")
-                }
-                else {
-                    1984
-                }
-            };
-            dstamp += epoch * 0x40;
+            dstamp += epoch_from_env() * 0x40;
         }
         tstamp <<= 4 * (5 - time_part.len());
         Time {
@@ -106,15 +98,7 @@ impl Time {
             u32::from_str_radix(time_part, 16).expect("Bad time format")
         };
         if date_part.len() < 5 {
-            let epoch = {
-                if let Ok(epoch_str) = env::var("HEXEPOCH") {
-                    epoch_str.parse::<i32>().expect("Bad HEXEPOCH")
-                }
-                else {
-                    1984
-                }
-            };
-            dstamp += epoch * 0x400;
+            dstamp += epoch_from_env() * 0x400;
         }
         tstamp <<= 4 * (4 - time_part.len());
         Time {
@@ -126,6 +110,17 @@ impl Time {
             sec: (tstamp & 0xf) as u8,
         }
     }
+}
+
+/// Get the epoch from the environment, or default to 1984
+fn epoch_from_env() -> i32 {
+    if let Ok(epoch_str) = env::var("HEXEPOCH") {
+        if let Ok(epoch) = epoch_str.parse::<i32>() {
+            return epoch;
+        }
+        eprintln!("Bad HEXEPOCH {}.  Defaulting to 1984", epoch_str);
+    };
+    1984
 }
 
 /// Weekday (Sunday is 0) of the first day of the month
