@@ -61,7 +61,7 @@ impl Time {
         let dstamp = if date_part.is_empty() {
             0
         } else {
-            i32::from_str_radix(date_part, 16).expect("Bad date format")
+            i32::from_str_radix(date_part, 16).expect("Bad week format")
         };
         let mut tstamp = if time_part.is_empty() {
             0
