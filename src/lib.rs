@@ -12,17 +12,18 @@ pub struct Time {
 }
 
 impl Time {
-    pub fn now() -> Self {
-        let local = time::now();
+    pub fn from_tm(local: time::Tm) -> Self {
+        let year = local.tm_year + 1900;
         let month = local.tm_mon;
         let (quarter, month3) = div_mod_floor(month, 3);
-        let weekday = local.tm_wday;
+        // strptime doesn't set tm_wday
+        let weekday = month_weekday(year, month, local.tm_mday);
         let qday = month3 * 38 - (month == 2 || month == 11) as i32;
         let (pm, hour) = div_mod_floor(local.tm_hour, 12);
         let leap_second = local.tm_sec / 60;
         let (tick, sec) = div_mod_floor(local.tm_sec - leap_second, 15);
         Time {
-            quarter: (local.tm_year + 1900) * 4 + quarter as i32,
+            quarter: year * 4 + quarter as i32,
             week: ((qday + local.tm_mday + 5 - weekday) / 7) as u8,
             halfday: weekday as u8 * 2 + pm as u8,
             hour: hour as u8,
@@ -31,13 +32,17 @@ impl Time {
         }
     }
 
+    pub fn now() -> Self {
+        Time::from_tm(time::now())
+    }
+
     pub fn decode(self: &Time) -> time::Tm {
         let (year, quarter) = div_mod_floor(self.quarter, 4);
         let month =
             quarter * 3 + (self.week * 16 + self.halfday) as i32 / 0x55;
         let k = (month % 3) * 38 + 5 - (month == 2 || month == 11) as i32;
         let day = (self.week * 7 + self.halfday / 2) as i32 - k
-            + (1 + k - month_weekday(year, month)) % 7;
+            + (1 + k - month_weekday(year, month, 1)) % 7;
         let toc = self.tick / 16 * 15 + self.tick % 16;
         time::Tm {
             tm_year: year - 1900,
@@ -71,8 +76,7 @@ impl Time {
         let mut quarter = dstamp / 0x10;
         if date_part.len() < 4 {
             quarter += epoch_from_env() * 4;
-        }
-        else if date_part.len() < 5 {
+        } else if date_part.len() < 5 {
             quarter += default_hexennium(quarter);
         }
         tstamp <<= 4 * (5 - time_part.len());
@@ -103,8 +107,7 @@ impl Time {
         let mut quarter = dstamp / 0x100;
         if date_part.len() < 5 {
             quarter += epoch_from_env() * 4;
-        }
-        else if date_part.len() < 6 {
+        } else if date_part.len() < 6 {
             quarter += default_hexennium(quarter);
         }
         tstamp <<= 4 * (4 - time_part.len());
@@ -133,12 +136,15 @@ fn epoch_from_env() -> i32 {
 /// Decide on the leading digit for a two-digit quarter
 fn default_hexennium(quarter: i32) -> i32 {
     // Default hexennium starts with 1920
-    if quarter < 0xe00 { 0x2000 } else { 0x1000 }
+    if quarter < 0xe00 {
+        0x2000
+    } else {
+        0x1000
+    }
 }
 
-/// Weekday (Sunday is 0) of the first day of the month
-/// month is 0 for January
-fn month_weekday(year: i32, month: i32) -> i32 {
+/// Weekday of the given day (Sunday is 0, January is 0)
+fn month_weekday(year: i32, month: i32, day: i32) -> i32 {
     // Based on RFC 3339 Appendix B
     let mut y = year;
     let mut m = month - 1;
@@ -148,6 +154,6 @@ fn month_weekday(year: i32, month: i32) -> i32 {
     }
     let (cent, y) = div_mod_floor(y, 100);
     let day =
-        (26 * m - 2) / 10 + 1 + y + y / 4 + div_floor(cent, 4) + 5 * cent;
+        (26 * m - 2) / 10 + day + y + y / 4 + div_floor(cent, 4) + 5 * cent;
     mod_floor(day, 7)
 }
