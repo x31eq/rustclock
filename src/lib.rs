@@ -120,6 +120,33 @@ impl Time {
             sec: (tstamp & 0xf) as u8,
         }
     }
+
+    /// From command line arguments or current time if there none
+    ///
+    /// This is a bit ad hoc but used by two binaries
+    pub fn from_args() -> Self {
+        let args = env::args().skip(1);
+        if args.len() == 0 {
+            Time::now()
+        } else {
+            let datetime = args.collect::<Vec<String>>().join(" ");
+            Time::from_tm({
+                if datetime.find('-') == None {
+                    time::strptime(
+                        &format!("1984-01-01 {}", datetime),
+                        "%Y-%m-%d %H:%M:%S",
+                    )
+                    .expect("Bad time format")
+                } else if datetime.find(' ') == None {
+                    time::strptime(&datetime, "%Y-%m-%d")
+                        .expect("Bad date format")
+                } else {
+                    time::strptime(&datetime, "%Y-%m-%d %H:%M:%S")
+                        .expect("Bad date format")
+                }
+            })
+        }
+    }
 }
 
 /// Get the epoch from the environment, or default to 1984
