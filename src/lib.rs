@@ -33,7 +33,6 @@ impl Time {
 
     pub fn decode(self: &Time) -> time::Tm {
         let (year, quarter) = div_mod_floor(self.quarter, 4);
-        let year = 1920 + mod_floor(year + 128, 1024);
         let month =
             quarter * 3 + (self.week * 16 + self.halfday) as i32 / 0x55;
         let k = (month % 3) * 38 + 5 - (month == 2 || month == 11) as i32;
@@ -59,7 +58,7 @@ impl Time {
         let mut parts = festamp.split('.');
         let date_part = parts.next().unwrap();
         let time_part = parts.next().unwrap_or("0");
-        let mut dstamp = if date_part.is_empty() {
+        let dstamp = if date_part.is_empty() {
             0
         } else {
             i32::from_str_radix(date_part, 16).expect("Bad date format")
@@ -69,12 +68,16 @@ impl Time {
         } else {
             u32::from_str_radix(time_part, 16).expect("Bad time format")
         };
+        let mut quarter = dstamp / 0x10;
         if date_part.len() < 4 {
-            dstamp += epoch_from_env() * 0x40;
+            quarter += epoch_from_env() * 4;
+        }
+        else if date_part.len() < 5 {
+            quarter += default_hexennium(quarter);
         }
         tstamp <<= 4 * (5 - time_part.len());
         Time {
-            quarter: dstamp / 0x10,
+            quarter,
             week: dstamp as u8 & 0xf,
             halfday: (tstamp / 0x1_0000) as u8,
             hour: ((tstamp / 0x1000) & 0xf) as u8,
@@ -87,7 +90,7 @@ impl Time {
         let mut parts = feestamp.split(':');
         let date_part = parts.next().unwrap();
         let time_part = parts.next().unwrap_or("0");
-        let mut dstamp = if date_part.is_empty() {
+        let dstamp = if date_part.is_empty() {
             0
         } else {
             i32::from_str_radix(date_part, 16).expect("Bad date format")
@@ -97,12 +100,16 @@ impl Time {
         } else {
             u32::from_str_radix(time_part, 16).expect("Bad time format")
         };
+        let mut quarter = dstamp / 0x100;
         if date_part.len() < 5 {
-            dstamp += epoch_from_env() * 0x400;
+            quarter += epoch_from_env() * 4;
+        }
+        else if date_part.len() < 6 {
+            quarter += default_hexennium(quarter);
         }
         tstamp <<= 4 * (4 - time_part.len());
         Time {
-            quarter: dstamp / 0x100,
+            quarter,
             week: (dstamp / 0x10) as u8 & 0xf,
             halfday: (dstamp & 0xf) as u8,
             hour: (tstamp / 0x1000) as u8,
@@ -121,6 +128,12 @@ fn epoch_from_env() -> i32 {
         eprintln!("Bad HEXEPOCH {}.  Defaulting to 1984", epoch_str);
     };
     1984
+}
+
+/// Decide on the leading digit for a two-digit quarter
+fn default_hexennium(quarter: i32) -> i32 {
+    // Default hexennium starts with 1920
+    if quarter < 0xe00 { 0x2000 } else { 0x1000 }
 }
 
 /// Weekday (Sunday is 0) of the first day of the month
