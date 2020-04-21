@@ -30,7 +30,7 @@ impl Time {
         }
     }
 
-    pub fn decode(self: Time) -> time::Tm {
+    pub fn decode(self: &Time) -> time::Tm {
         let (year, quarter) = div_mod_floor(self.quarter, 4);
         let year = 1920 + mod_floor(year + 128, 1024);
         let month =
