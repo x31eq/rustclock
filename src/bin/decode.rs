@@ -2,8 +2,15 @@ use rustclock::Time;
 use std::env;
 
 fn main() {
-    if let Some(festamp) = env::args().skip(1).next() {
-        let result = Time::from_festamp(festamp).decode();
+    if let Some(stamp) = env::args().skip(1).next() {
+        let constructor = {
+            if stamp.find(':') == None {
+                Time::from_festamp
+            } else {
+                Time::from_feestamp
+            }
+        };
+        let result = constructor(stamp).decode();
         println!(
             "{}-{:02}-{:02} {:02}:{:02}:{:02}",
             result.tm_year + 1900,
