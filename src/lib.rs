@@ -58,7 +58,7 @@ impl Time {
         let mut parts = festamp.split('.');
         let date_part = parts.next().unwrap();
         let time_part = parts.next().unwrap_or("0");
-        let dstamp = if date_part.is_empty() {
+        let mut dstamp = if date_part.is_empty() {
             0
         } else {
             i32::from_str_radix(date_part, 16).expect("Bad date format")
@@ -68,6 +68,10 @@ impl Time {
         } else {
             u32::from_str_radix(time_part, 16).expect("Bad time format")
         };
+        if date_part.len() < 4 {
+            // Default epoch is 1984 to 2047
+            dstamp += 1984 * 0x40;
+        }
         tstamp <<= 4 * (5 - time_part.len());
         Time {
             quarter: dstamp / 0x10,
@@ -83,7 +87,7 @@ impl Time {
         let mut parts = feestamp.split(':');
         let date_part = parts.next().unwrap();
         let time_part = parts.next().unwrap_or("0");
-        let dstamp = if date_part.is_empty() {
+        let mut dstamp = if date_part.is_empty() {
             0
         } else {
             i32::from_str_radix(date_part, 16).expect("Bad date format")
@@ -93,9 +97,13 @@ impl Time {
         } else {
             u32::from_str_radix(time_part, 16).expect("Bad time format")
         };
+        if date_part.len() < 5 {
+            // Default epoch is 1984 to 2047
+            dstamp += 1984 * 0x400;
+        }
         tstamp <<= 4 * (4 - time_part.len());
         Time {
-            quarter: dstamp / 0x100 + 1984 * 4,
+            quarter: dstamp / 0x100,
             week: (dstamp / 0x10) as u8 & 0xf,
             halfday: (dstamp & 0xf) as u8,
             hour: (tstamp / 0x1000) as u8,
