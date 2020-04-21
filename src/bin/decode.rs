@@ -7,12 +7,10 @@ fn main() {
         eprintln!("Give the timestamp to decode on the command line");
     }
     for stamp in args {
-        let constructor = {
-            if stamp.find(':') == None {
-                Time::from_festamp
-            } else {
-                Time::from_feestamp
-            }
+        let constructor = if stamp.find(':') == None {
+            Time::from_festamp
+        } else {
+            Time::from_feestamp
         };
         let result = constructor(&stamp).decode();
         println!(
