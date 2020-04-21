@@ -2,7 +2,9 @@ use rustclock::Time;
 use std::env;
 
 fn main() {
-    if let Some(stamp) = env::args().nth(1) {
+    let mut found = false;
+    for stamp in env::args().skip(1) {
+        found = true;
         let constructor = {
             if stamp.find(':') == None {
                 Time::from_festamp
@@ -20,7 +22,8 @@ fn main() {
             result.tm_min,
             result.tm_sec
         )
-    } else {
+    }
+    if !found {
         eprintln!("Give the timestamp to decode on the command line");
     }
 }
