@@ -1,0 +1,14 @@
+This is a Rust project to work with hex timestamps.
+It's the same format as an old project I worked on with shell scripts,
+although that started out as Python:
+
+https://bitbucket.org/x31eq/binaryclock
+
+None of this is any use to anybody, isn't even a clock,
+and doesn't show any particularly interesting aspects of Rust.
+The source code is longer than the original shell scripts
+and the executables are much bigger because there's
+an overhead in standard Rust binaries for things like reporting backtraces.
+It is much faster in Rust, as if that were an issue.
+It's also more flexible in what the hex-to-normal scripts can handle.
+The hex-output scripts only accept a few stereotyped formats.
