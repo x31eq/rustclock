@@ -17,7 +17,7 @@ impl Time {
         let month = local.tm_mon;
         let (quarter, month3) = div_mod_floor(month, 3);
         // strptime doesn't set tm_wday
-        let weekday = month_weekday(year, month, local.tm_mday);
+        let weekday = weekday(year, month, local.tm_mday);
         let qday = month3 * 38 - (month == 2 || month == 11) as i32;
         let (pm, hour) = div_mod_floor(local.tm_hour, 12);
         let leap_second = local.tm_sec / 60;
@@ -42,7 +42,7 @@ impl Time {
             quarter * 3 + (self.week * 16 + self.halfday) as i32 / 0x55;
         let k = (month % 3) * 38 + 5 - (month == 2 || month == 11) as i32;
         let day = (self.week * 7 + self.halfday / 2) as i32 - k
-            + (1 + k - month_weekday(year, month, 1)) % 7;
+            + (1 + k - weekday(year, month, 1)) % 7;
         let toc = self.tick / 16 * 15 + self.tick % 16;
         time::Tm {
             tm_year: year - 1900,
@@ -175,7 +175,7 @@ fn default_hexennium(quarter: i32) -> i32 {
 }
 
 /// Weekday of the given day (Sunday is 0, January is 0)
-fn month_weekday(year: i32, month: i32, day: i32) -> i32 {
+fn weekday(year: i32, month: i32, day: i32) -> i32 {
     // Based on RFC 3339 Appendix B
     let mut y = year;
     let mut m = month - 1;
