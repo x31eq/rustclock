@@ -41,9 +41,26 @@ impl Time {
         let month =
             quarter * 3 + (self.week * 16 + self.halfday) as i32 / 0x55;
         // c.f. from_tm
-        let qday = (month % 3) * 38 + 5 - (month == 2 || month == 11) as i32;
-        let day = (self.week * 7 + self.halfday / 2) as i32
-            + (1 + qday - weekday(year, month, 1)) % 7 - qday;
+        let qday = (month % 3) * 38 - (month == 2 || month == 11) as i32;
+        // week = (qday + day + 5 - weekday) / 7    [1]
+        // weekday = (weekday_1 + day - 1) % 7      [2]
+        // qday as above
+        // day = day of month (first day = 1) (we want to find this)
+        // weekday = days since Sunday
+        // weekday_1 = days since Sunday for the first day of the month
+        //
+        // Rearrange [1]
+        // week * 7 = qday + day + 5 - weekday
+        //            + (qday + day + 5 - weekday) % 7
+        // day = week * 7 + weekday - qday - 5
+        //       - (qday + day + 5 - weekday) % 7
+        //
+        // Substitute in [2]
+        // day = week * 7 + weekday - qday - 5
+        //       - (qday + day + 5 - (weekday_1 + day - 1)) % 7
+        // day = week * 7 + weekday - qday - 5 - (qday + 6 - weekday_1) % 7
+        let day = (self.week * 7 + self.halfday / 2) as i32 - qday - 5
+                    + (qday + 6 - weekday(year, month, 1)) % 7;
         let toc = self.tick / 16 * 15 + self.tick % 16;
         time::Tm {
             tm_year: year - 1900,
