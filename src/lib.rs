@@ -65,7 +65,7 @@ impl Time {
         time::Tm {
             tm_year: year - 1900,
             tm_mon: month,
-            tm_mday: day as i32,
+            tm_mday: day,
             tm_wday: (self.halfday / 2) as i32,
             tm_hour: (self.hour + 12 * (self.halfday & 1)) as i32,
             tm_min: toc as i32 / 4,
