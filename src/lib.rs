@@ -40,9 +40,10 @@ impl Time {
         let (year, quarter) = div_mod_floor(self.quarter, 4);
         let month =
             quarter * 3 + (self.week * 16 + self.halfday) as i32 / 0x55;
-        let k = (month % 3) * 38 + 5 - (month == 2 || month == 11) as i32;
-        let day = (self.week * 7 + self.halfday / 2) as i32 - k
-            + (1 + k - weekday(year, month, 1)) % 7;
+        // c.f. from_tm
+        let qday = (month % 3) * 38 + 5 - (month == 2 || month == 11) as i32;
+        let day = (self.week * 7 + self.halfday / 2) as i32
+            + (1 + qday - weekday(year, month, 1)) % 7 - qday;
         let toc = self.tick / 16 * 15 + self.tick % 16;
         time::Tm {
             tm_year: year - 1900,
