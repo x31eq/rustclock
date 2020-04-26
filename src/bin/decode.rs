@@ -20,7 +20,7 @@ fn main() {
             result.tm_mday,
             result.tm_hour,
             result.tm_min,
-            result.tm_sec
+            result.tm_sec,
         )
     }
 }
