@@ -155,7 +155,7 @@ impl Time {
                     time::at(time::Timespec::new(stamp, 0))
                 } else {
                     if datetime.find('-') == None {
-                        datetime = format!("1984-01-01 {}", datetime);
+                        datetime.insert_str(0, "1984-01-01 ");
                     }
                     [
                         "%Y-%m-%d %T",
