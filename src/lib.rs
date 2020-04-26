@@ -160,25 +160,18 @@ impl Time {
                     )
                     .expect("Bad time format")
                 } else {
-                    let mut templates = [
+                    [
                         "%T",
                         "%Y-%m-%d %T",
                         "%Y-%m-%dT%T",
                         "%Y-%m-%d",
                         "%Y-%m-%d %H:%M",
                     ]
-                    .iter();
-                    loop {
-                        if let Some(template) = templates.next() {
-                            if let Ok(result) =
-                                time::strptime(&datetime, template)
-                            {
-                                break result;
-                            }
-                        } else {
-                            panic!("Bad datetime format")
-                        }
-                    }
+                    .iter()
+                    .map(|template| time::strptime(&datetime, template))
+                    .find(Result::is_ok)
+                    .expect("Bad datetime format")
+                    .unwrap()
                 }
             })
         }
