@@ -151,7 +151,7 @@ impl Time {
             Time::from_tm({
                 if datetime.find('@') == Some(0) {
                     datetime.remove(0);
-                    let stamp: i64 = datetime.parse().expect("Bad timestamp");
+                    let stamp = datetime.parse().expect("Bad timestamp");
                     time::at(time::Timespec::new(stamp, 0))
                 } else {
                     if datetime.find('-') == None {
