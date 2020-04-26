@@ -1,4 +1,4 @@
-use num_integer::{div_floor, div_mod_floor, mod_floor};
+use num_integer::{div_mod_floor, mod_floor};
 use std::env;
 use time;
 
@@ -202,7 +202,6 @@ fn weekday(year: i32, month: i32, day: i32) -> i32 {
         y -= 1;
     }
     let (cent, y) = div_mod_floor(y, 100);
-    let day =
-        (26 * m - 2) / 10 + day + y + y / 4 + div_floor(cent, 4) + 5 * cent;
+    let day = (26 * m - 2) / 10 + day + y + y / 4 + (cent >> 2) + 5 * cent;
     mod_floor(day, 7)
 }
