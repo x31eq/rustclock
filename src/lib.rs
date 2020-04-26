@@ -58,7 +58,7 @@ impl Time {
         // Substitute in [2]
         // day = week * 7 + weekday - qday - 5
         //       + (qday + day + 5 - (weekday_1 + day - 1)) % 7
-        // day = week * 7 + weekday - qday - 5 - (qday + 6 - weekday_1) % 7
+        // day = week * 7 + weekday - qday - 5 + (qday + 6 - weekday_1) % 7
         let day = (self.week * 7 + self.halfday / 2) as i32 - qday - 5
             + (qday + 6 - weekday(year, month, 1)) % 7;
         let toc = self.tick / 16 * 15 + self.tick % 16;
