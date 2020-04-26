@@ -156,14 +156,14 @@ impl Time {
                 } else if datetime.find('-') == None {
                     time::strptime(
                         &format!("1984-01-01 {}", datetime),
-                        "%Y-%m-%d %H:%M:%S",
+                        "%Y-%m-%d %T",
                     )
                     .expect("Bad time format")
                 } else if datetime.find(' ') == None {
                     time::strptime(&datetime, "%Y-%m-%d")
                         .expect("Bad date format")
                 } else {
-                    time::strptime(&datetime, "%Y-%m-%d %H:%M:%S")
+                    time::strptime(&datetime, "%Y-%m-%d %T")
                         .expect("Bad date format")
                 }
             })
