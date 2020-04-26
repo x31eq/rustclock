@@ -143,7 +143,8 @@ impl Time {
     ///
     /// This is a bit ad hoc but used by two binaries
     pub fn from_args() -> Self {
-        let datetime = env::args().skip(1).collect::<Vec<String>>().join(" ");
+        let mut datetime =
+            env::args().skip(1).collect::<Vec<String>>().join(" ");
         if datetime.is_empty() {
             Time::now()
         } else {
@@ -153,17 +154,15 @@ impl Time {
                     datetime.remove(0);
                     let stamp: i64 = datetime.parse().expect("Bad timestamp");
                     time::at(time::Timespec::new(stamp, 0))
-                } else if datetime.find('-') == None {
-                    time::strptime(
-                        &format!("1984-01-01 {}", datetime),
-                        "%Y-%m-%d %T",
-                    )
-                    .expect("Bad time format")
                 } else {
+                    if datetime.find('-') == None {
+                        datetime = format!("1984-01-01 {}", datetime);
+                    }
                     [
                         "%Y-%m-%d %T",
                         "%Y-%m-%dT%T",
                         "%Y-%m-%d %H:%M",
+                        "%Y-%m-%dT%H:%M",
                         "%Y-%m-%d",
                     ]
                     .iter()
