@@ -60,7 +60,7 @@ impl Time {
         //       + (qday + day + 5 - (weekday_1 + day - 1)) % 7
         // day = week * 7 + weekday - qday - 5 - (qday + 6 - weekday_1) % 7
         let day = (self.week * 7 + self.halfday / 2) as i32 - qday - 5
-                    + (qday + 6 - weekday(year, month, 1)) % 7;
+            + (qday + 6 - weekday(year, month, 1)) % 7;
         let toc = self.tick / 16 * 15 + self.tick % 16;
         time::Tm {
             tm_year: year - 1900,
