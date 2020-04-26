@@ -2,9 +2,12 @@ use rustclock::Time;
 
 fn main() {
     let instant = Time::from_args();
-    print!("{:03x}{:x}", instant.quarter & 0xfff, instant.week);
     println!(
-        ".{:x}{:x}{:02x}",
-        instant.halfday, instant.hour, instant.tick,
+        "{:03x}{:x}.{:x}{:x}{:02x}",
+        instant.quarter & 0xfff,
+        instant.week,
+        instant.halfday,
+        instant.hour,
+        instant.tick,
     );
 }
