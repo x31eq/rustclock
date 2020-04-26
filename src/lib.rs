@@ -161,11 +161,10 @@ impl Time {
                     .expect("Bad time format")
                 } else {
                     [
-                        "%T",
                         "%Y-%m-%d %T",
                         "%Y-%m-%dT%T",
-                        "%Y-%m-%d",
                         "%Y-%m-%d %H:%M",
+                        "%Y-%m-%d",
                     ]
                     .iter()
                     .map(|template| time::strptime(&datetime, template))
