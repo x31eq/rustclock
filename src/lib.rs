@@ -162,6 +162,8 @@ impl Time {
                         "%Y-%m-%dT%T",
                         "%Y-%m-%d %H:%M",
                         "%Y-%m-%dT%H:%M",
+                        "%T %Y-%m-%d",
+                        "%H:%M %Y-%m-%d",
                         "%Y-%m-%d",
                     ]
                     .iter()
