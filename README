@@ -12,3 +12,11 @@ an overhead in standard Rust binaries for things like reporting backtraces.
 It is much faster in Rust, as if that were an issue.
 It's also more flexible in what the hex-to-normal scripts can handle.
 The hex-output scripts only accept a few stereotyped formats.
+
+The executables can be reduced to about half the size using Xargo.
+For instructions (and reasons why the executables start off so big)
+see here:
+
+https://github.com/johnthagen/min-sized-rust
+
+I added the Xargo.toml file as expected.
