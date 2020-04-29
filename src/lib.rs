@@ -206,7 +206,9 @@ fn default_hexennium(quarter: i32) -> i32 {
 
 /// Weekday of the given day (Sunday is 0, January is 0)
 fn weekday(year: i32, month: i32, day: i32) -> i32 {
-    // Based on RFC 3339 Appendix B
+    // Based on RFC 3339 Appendix B.
+    // This should work with negative years,
+    // but I don't know how to test them.
     let mut y = year;
     let mut m = month - 1;
     if m < 1 {
@@ -214,7 +216,9 @@ fn weekday(year: i32, month: i32, day: i32) -> i32 {
         y -= 1;
     }
     let cent = if y > 0 { y / 100 } else { -((99 - y) / 100) };
-    let y = y - 100 * cent;
+    y -= 100 * cent;
+    assert!(y >= 0);
+    assert!(26 * m - 2 >= 0);
     let day = (26 * m - 2) / 10 + day + y + y / 4 + (cent >> 2) + 5 * cent;
     assert!(day >= 0);
     day % 7
