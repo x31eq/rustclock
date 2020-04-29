@@ -9,7 +9,6 @@ edition = "2018"
 
 [dependencies]
 time = "0.1.42"
-num-integer = "0.1.42"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

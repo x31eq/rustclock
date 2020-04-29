@@ -1,4 +1,3 @@
-use num_integer::{div_mod_floor, mod_floor};
 use std::env;
 use time;
 
@@ -15,16 +14,22 @@ impl Time {
     pub fn from_tm(local: time::Tm) -> Self {
         let year = local.tm_year + 1900;
         let month = local.tm_mon;
-        let (quarter, month3) = div_mod_floor(month, 3);
+        let quarter = month / 3;
+        let month3 = month % 3;
         // strptime doesn't set tm_wday
         let weekday = weekday(year, month, local.tm_mday);
-        let qday = month3 * 38 - (month == 2 || month == 11) as i32;
-        let (pm, hour) = div_mod_floor(local.tm_hour, 12);
+        let mut qday = month3 * 38 - (month == 2 || month == 11) as i32;
+        let pm = local.tm_hour / 12;
+        let hour = local.tm_hour % 12;
         let leap_second = local.tm_sec / 60;
-        let (tick, sec) = div_mod_floor(local.tm_sec - leap_second, 15);
+        assert!((local.tm_sec - leap_second) >= 0);
+        let tick = (local.tm_sec - leap_second) / 15;
+        let sec = (local.tm_sec - leap_second) % 15;
+        qday += local.tm_mday + 5 - weekday;
+        assert!(qday >= 0);
         Time {
             quarter: year * 4 + quarter as i32,
-            week: ((qday + local.tm_mday + 5 - weekday) / 7) as u8,
+            week: (qday / 7) as u8,
             halfday: weekday as u8 * 2 + pm as u8,
             hour: hour as u8,
             tick: ((local.tm_min * 4 + tick) * 16 / 15) as u8,
@@ -37,7 +42,8 @@ impl Time {
     }
 
     pub fn decode(self: &Time) -> time::Tm {
-        let (year, quarter) = div_mod_floor(self.quarter, 4);
+        let quarter = self.quarter & 3;
+        let year = self.quarter >> 2;
         let month =
             quarter * 3 + (self.week * 16 + self.halfday) as i32 / 0x55;
         // c.f. from_tm
@@ -207,7 +213,9 @@ fn weekday(year: i32, month: i32, day: i32) -> i32 {
         m += 12;
         y -= 1;
     }
-    let (cent, y) = div_mod_floor(y, 100);
+    let cent = if y > 0 { y / 100 } else { -((99 - y) / 100) };
+    let y = y - 100 * cent;
     let day = (26 * m - 2) / 10 + day + y + y / 4 + (cent >> 2) + 5 * cent;
-    mod_floor(day, 7)
+    assert!(day >= 0);
+    day % 7
 }
