@@ -173,6 +173,13 @@ fedate_test()
 # so that leap seconds are expressible
 export TZ=right/UTC
 
+# Check that the right timezones are installed
+[ -d /usr/share/zoneinfo/right ] || {
+    echo Leap-second-aware timezones not installed
+    echo Leap second tests will fail
+    echo Install tzdata-legacy package on Debian
+}
+
 fee_test 0008:0000 1920-01-01
 fee_test d3ec:8000 1972-12-30 08:00:00
 fee_test d3f1:b800 1972-12-31 23:30:00
